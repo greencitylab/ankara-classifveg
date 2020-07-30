@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Ankara Vegetation classification 2019</title>
+    </head>
+    <body>
+    <logo>
+        <div id="logo">
+        <img src="images/terranis_logo_web.png" alt="logo" style="position:fixed;bottom:0;left:0;z-index:999999;">
+        </div>
+    </logo>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.wms.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="data/OSMWaterbodies_1.js"></script>
+        <script src="data/AnkaraAOI_3.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:17, minZoom:3
+        }).fitBounds([[39.94319189724218,32.84931915577832],[39.96389193675865,32.89631773218452]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_Googlesatelliteimagery_0');
+        map.getPane('pane_Googlesatelliteimagery_0').style.zIndex = 400;
+        var layer_Googlesatelliteimagery_0 = L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
+            pane: 'pane_Googlesatelliteimagery_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 3,
+            maxZoom: 17,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_Googlesatelliteimagery_0;
+        map.addLayer(layer_Googlesatelliteimagery_0);
+        function pop_OSMWaterbodies_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['osm_id'] !== null ? autolinker.link(feature.properties['osm_id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['code'] !== null ? autolinker.link(feature.properties['code'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fclass'] !== null ? autolinker.link(feature.properties['fclass'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name'] !== null ? autolinker.link(feature.properties['name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_OSMWaterbodies_1_0() {
+            return {
+                pane: 'pane_OSMWaterbodies_1',
+                opacity: 1,
+                color: 'rgba(150,228,236,0.8)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,228,236,0.8)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_OSMWaterbodies_1');
+        map.getPane('pane_OSMWaterbodies_1').style.zIndex = 401;
+        map.getPane('pane_OSMWaterbodies_1').style['mix-blend-mode'] = 'normal';
+        var layer_OSMWaterbodies_1 = new L.geoJson(json_OSMWaterbodies_1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_OSMWaterbodies_1',
+            layerName: 'layer_OSMWaterbodies_1',
+            pane: 'pane_OSMWaterbodies_1',
+            onEachFeature: pop_OSMWaterbodies_1,
+            style: style_OSMWaterbodies_1_0,
+        });
+        bounds_group.addLayer(layer_OSMWaterbodies_1);
+        map.addLayer(layer_OSMWaterbodies_1);
+        map.createPane('pane_Ankaravegetation_2');
+        map.getPane('pane_Ankaravegetation_2').style.zIndex = 402;
+        var layer_Ankaravegetation_2 = L.WMS.layer("https://greencitylab.terranis.fr/geoserver/wms?tiled=true", "n4c:2020_ankara_classifveg", {
+            pane: 'pane_Ankaravegetation_2',
+            format: 'image/png',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            tiled: true,
+            info_format: 'text/html',
+            opacity: 1,
+            identify: false,
+            attribution: '',
+        });
+        map.addLayer(layer_Ankaravegetation_2);
+        function pop_AnkaraAOI_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_AnkaraAOI_3_0() {
+            return {
+                pane: 'pane_AnkaraAOI_3',
+                opacity: 1,
+                color: 'rgba(255,64,64,0.8)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,142,142,0.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_AnkaraAOI_3');
+        map.getPane('pane_AnkaraAOI_3').style.zIndex = 403;
+        map.getPane('pane_AnkaraAOI_3').style['mix-blend-mode'] = 'normal';
+        var layer_AnkaraAOI_3 = new L.geoJson(json_AnkaraAOI_3, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_AnkaraAOI_3',
+            layerName: 'layer_AnkaraAOI_3',
+            pane: 'pane_AnkaraAOI_3',
+            onEachFeature: pop_AnkaraAOI_3,
+            style: style_AnkaraAOI_3_0,
+        });
+        bounds_group.addLayer(layer_AnkaraAOI_3);
+        map.addLayer(layer_AnkaraAOI_3);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2><div align="right">Detection & Vegetation cover classification using Sentinel imagery<br><font size="-1">Ankara city - Hungary | 2020</font></div></h2>';
+            };
+            title.addTo(map);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/AnkaraAOI_3.png" /> Ankara AOI': layer_AnkaraAOI_3,'Ankara vegetation<br> <img src="legend/classif_veg.jpg" />': layer_Ankaravegetation_2,'<img src="legend/OSMWaterbodies_1.png" /> OSM Water bodies': layer_OSMWaterbodies_1,"Google satellite imagery": layer_Googlesatelliteimagery_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
